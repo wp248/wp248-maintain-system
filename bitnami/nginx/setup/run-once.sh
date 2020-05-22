@@ -108,7 +108,7 @@ function nginx_config_test(){
 	sudo nginx -t && sudo /opt/bitnami/ctlscript.sh restart
 }
 
-function update_crontab{
+function update_crontab(){
 	#write out current crontab
 	sudo crontab -l > root_cron.${DATESTAMP}
 	#echo new cron into cron file
