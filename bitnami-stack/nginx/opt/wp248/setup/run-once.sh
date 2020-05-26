@@ -119,6 +119,9 @@ function update_crontab(){
 }
 
 # TODO: Add SSL setup using armeters from command line
+sudo apt install memcached -y
+sudo apt install locate -y
+sudo updatedb
 
 disable_banner
 setup_modify_php

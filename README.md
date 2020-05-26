@@ -8,3 +8,7 @@ Collection of scripts to support during the setup of WordPress sites, but mostly
 
 DISABLE_WP_CRON
 wp config set DISABLE_WP_CRON true
+
+Remmber:
+after changing php.ini need to restart both services
+sudo /opt/bitnami/ctlscript.sh restart php-fpm nginx
