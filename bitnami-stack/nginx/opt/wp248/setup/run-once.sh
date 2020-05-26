@@ -118,7 +118,7 @@ function update_crontab(){
 	crontab root_cron.${DATESTAMP}
 }
 
-#TODO: Add SSL setup using armeters from command line
+# TODO: Add SSL setup using armeters from command line
 
 disable_banner
 setup_modify_php
