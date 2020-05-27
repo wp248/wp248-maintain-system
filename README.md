@@ -27,11 +27,11 @@ nano /opt/wp248/setup/run-once.sh
 ```
 Fix the following parm
 
-``
+```
 CRT_EMAIL=webmaster@limitlessv.com
 CRT_PRIMARY_DOMAIN=speed1.limitlessv.com
 CRT_SECONDARY_DOMAIN=www.speed1.limitlessv.com
-``
+```
 
 Run the setup
 ``

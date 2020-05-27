@@ -24,18 +24,34 @@ function default_permissions {
 }
 
 function write_permissions {
-	# Use it only for setup and update Wordfance plugin
-	sudo chown -R bitnami:daemon ${SITE_DIR};
-	sudo find ${SITE_DIR} -type d -exec chmod 775 {} \;
-	sudo find ${SITE_DIR} -type f -exec chmod 664 {} \;
-	sudo chmod 775 ${SITE_DIR}/wp-config.php;
-	sudo chmod 775 ${SITE_DIR}/wordfence-waf.php;
-	sudo chmod 775 ${SITE_DIR}/.user.ini;
-	sudo chmod -Rf 775 ${SITE_DIR}/wp-content/wflogs/;
+    # Use it only for setup and update Wordfance plugin
+    sudo chown -R bitnami:daemon ${SITE_DIR};
+    sudo find ${SITE_DIR} -type d -exec chmod 775 {} \;
+    sudo find ${SITE_DIR} -type f -exec chmod 664 {} \;
 
-	# Verify backup directory permissions
-	sudo chown -R bitnami:daemon ${SITE_BAK};
-	sudo chmod -Rf 775 ${SITE_BAK};
+    if [ -d "${SITE_DIR}/wp-content/wflogs/" ]; then
+        sudo chmod -Rf 775 ${SITE_DIR}/wp-content/wflogs/;
+    fi
+
+    if [ -f "${SITE_DIR}/wp-config.php" ]; then
+        sudo chmod 775 ${SITE_DIR}/wp-config.php;
+    fi
+
+    if [ -f "${SITE_DIR}/wordfence-waf.php" ]; then
+        sudo chmod 775 ${SITE_DIR}/wordfence-waf.php;
+    fi
+
+    if [ -f "${SITE_DIR}/.user.ini" ]; then
+        sudo chmod 775 ${SITE_DIR}/.user.ini;
+    fi
+
+    if [ ! -d ${SITE_BAK} ]; then
+        sudo mkdir -p ${SITE_BAK}
+    fi
+
+    # Verify backup directory permissions
+    sudo chown -R bitnami:daemon ${SITE_BAK};
+    sudo chmod -Rf 775 ${SITE_BAK};
 
 }
 

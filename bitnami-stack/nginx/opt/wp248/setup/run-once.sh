@@ -102,6 +102,50 @@ function default_permissions {
 	sudo chown -R bitnami:daemon ${SITE_BAK};
 	sudo chmod -Rf 775 ${SITE_BAK};
 
+    if [ ! -d ${SITE_BAK} ]; then
+        sudo mkdir -p ${SITE_BAK}
+    fi
+
+    # Verify backup directory permissions
+    sudo chown -R bitnami:daemon ${SITE_BAK};
+    sudo chmod -Rf 775 ${SITE_BAK};
+}
+
+function write_permissions {
+    # Use it only for setup and update Wordfance plugin
+    sudo chown -R bitnami:daemon ${SITE_DIR};
+    sudo find ${SITE_DIR} -type d -exec chmod 775 {} \;
+    sudo find ${SITE_DIR} -type f -exec chmod 664 {} \;
+
+    if [ -d "${SITE_DIR}/wp-content/wflogs/" ]; then
+        sudo chmod -Rf 775 ${SITE_DIR}/wp-content/wflogs/;
+    fi
+
+    if [ -f "${SITE_DIR}/wp-config.php" ]; then
+        sudo chmod 775 ${SITE_DIR}/wp-config.php;
+    fi
+
+    if [ -f "${SITE_DIR}/wordfence-waf.php" ]; then
+        sudo chmod 775 ${SITE_DIR}/wordfence-waf.php;
+    fi
+
+    if [ -f "${SITE_DIR}/wflogs/config-synced.php" ]; then
+        sudo chmod 775 ${SITE_DIR}/wflogs/config-synced.php;
+    fi
+
+
+    if [ -f "${SITE_DIR}/.user.ini" ]; then
+        sudo chmod 775 ${SITE_DIR}/.user.ini;
+    fi
+
+    if [ ! -d ${SITE_BAK} ]; then
+        sudo mkdir -p ${SITE_BAK}
+    fi
+
+    # Verify backup directory permissions
+    sudo chown -R bitnami:daemon ${SITE_BAK};
+    sudo chmod -Rf 775 ${SITE_BAK};
+
 }
 
 function nginx_config_test(){
@@ -128,25 +172,11 @@ function update_crontab(){
 	sudo crontab ${CRON_DIR}/root_cron.${DATESTAMP}
 }
 
-function update_ngix(){
-
-# Create Backup for current config
-sudo cp /opt/bitnami/nginx/conf/nginx-app.conf /opt/bitnami/nginx/conf/nginx-app.conf.${DATESTAMP}
-echo "include \"/opt/bitnami/apps/wordpress/conf/wp248-cors.conf\";" >> /opt/bitnami/nginx/conf/nginx-app.conf
-
-sudo cp /opt/bitnami/nginx/conf/nginx.conf /opt/bitnami/nginx/conf/nginx.conf.${DATESTAMP}
-sed -i '/include \"/opt/bitnami/apps/wordpress/conf/wp248-cors.conf\";/i line1 line2' zzz.txt
-
-# Do remove the enter at the end , needed for CRLF
-sed -i '\/include \"\/opt\/bitnami\/nginx\/conf\/bitnami\/bitnami.conf\"/i \
-include "\/opt\/bitnami\/nginx\/conf\/wp248-bitnami-nginx.conf\"; \
-'  /opt/bitnami/nginx/conf/nginx.conf
-
-}
 # TODO: Add SSL setup using armeters from command line
 echo "step 1 - Start"
 sudo apt install memcached -y
 sudo apt install locate -y
+sudo apt install telnet -y
 sudo updatedb
 
 echo "step 2 - Start"
@@ -159,7 +189,7 @@ echo "step 4 - Start"
 setup_ssl
 
 echo "step 5 - Start"
-update_crontab
+write_permissions
 
 echo "step 6 - Start"
 default_permissions
@@ -172,3 +202,12 @@ wp_install_themes
 
 echo "step 9 - Start"
 sudo nginx -t && sudo /opt/bitnami/ctlscript.sh restart php-fpm nginx
+
+echo "step 10 - final setting wp config"
+
+write_permissions
+wp config set DISABLE_WP_CRON true
+wp config set WP_SITEURL "https://{CRT_PRIMARY_DOMAIN}/"
+wp config set WP_HOME "https://{CRT_PRIMARY_DOMAIN}/"
+
+wp config get
