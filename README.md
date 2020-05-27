@@ -27,13 +27,33 @@ nano /opt/wp248/setup/run-once.sh
 ```
 Fix the following parm
 
-```
+``
 CRT_EMAIL=webmaster@limitlessv.com
 CRT_PRIMARY_DOMAIN=speed1.limitlessv.com
 CRT_SECONDARY_DOMAIN=www.speed1.limitlessv.com
-```
+``
 
 Run the setup
-```
+``
 /opt/wp248/setup/run-once.sh
-```
+``
+
+Verify SSL installed correctly
+
+``
+ls -lah /opt/bitnami/nginx/conf/
+``
+
+fixing it using:
+``
+sudo ln /opt/bitnami/letsencrypt/certificates/sample.com.key /opt/bitnami/nginx/conf/server.key
+sudo ln /opt/bitnami/letsencrypt/certificates/sample.limitlessv.com.crt /opt/bitnami/nginx/conf/server.crt
+``
+
+Changing Permissions:
+
+``
+sudo nano ~/change-permission.sh
+~/change-permission.sh
+
+``

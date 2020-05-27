@@ -128,6 +128,21 @@ function update_crontab(){
 	sudo crontab ${CRON_DIR}/root_cron.${DATESTAMP}
 }
 
+function update_ngix(){
+
+# Create Backup for current config
+sudo cp /opt/bitnami/nginx/conf/nginx-app.conf /opt/bitnami/nginx/conf/nginx-app.conf.${DATESTAMP}
+echo "include \"/opt/bitnami/apps/wordpress/conf/wp248-cors.conf\";" >> /opt/bitnami/nginx/conf/nginx-app.conf
+
+sudo cp /opt/bitnami/nginx/conf/nginx.conf /opt/bitnami/nginx/conf/nginx.conf.${DATESTAMP}
+sed -i '/include \"/opt/bitnami/apps/wordpress/conf/wp248-cors.conf\";/i line1 line2' zzz.txt
+
+# Do remove the enter at the end , needed for CRLF
+sed -i '\/include \"\/opt\/bitnami\/nginx\/conf\/bitnami\/bitnami.conf\"/i \
+include "\/opt\/bitnami\/nginx\/conf\/wp248-bitnami-nginx.conf\"; \
+'  /opt/bitnami/nginx/conf/nginx.conf
+
+}
 # TODO: Add SSL setup using armeters from command line
 echo "step 1 - Start"
 sudo apt install memcached -y
