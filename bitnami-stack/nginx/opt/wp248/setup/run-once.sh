@@ -57,7 +57,7 @@ function setup_modify_php() {
 	# Create Backup
 	sudo cp ${PHP_DIR}/php.{ini,backup.${DATESTAMP}}
 
-	sudo cat php.mod >>  ${PHP_DIR}/php.ini
+	sudo cat ${PHP_DIR}/php.mod >>  ${PHP_DIR}/php.ini
 }
 
 function wp_install_plugins() {
@@ -109,24 +109,51 @@ function nginx_config_test(){
 }
 
 function update_crontab(){
+    export VISUAL="nano"
+    local CRON_DIR=/opt/wp248/setup
 	#write out current crontab
-	sudo crontab -l > root_cron.${DATESTAMP}
+	echo "cron 1:"${CRON_DIR}/root_cron.${DATESTAMP};
+	if !(sudo crontab -l > ${CRON_DIR}/root_cron.${DATESTAMP}); then
+		echo "Root cron is empty"
+	fi
 	#echo new cron into cron file
-	echo crontab-user-root.mod root_cron.${DATESTAMP}
+	echo "cron 2:"${CRON_DIR}/crontab-user-root.mod;
+	echo "cron 3:"${CRON_DIR}/root_cron.${DATESTAMP};
+
+	cat ${CRON_DIR}/crontab-user-root.mod >> ${CRON_DIR}/root_cron.${DATESTAMP}
 
 	#install new cron file
-	crontab root_cron.${DATESTAMP}
+	echo "cron 3:" ${CRON_DIR}/root_cron.${DATESTAMP}
+
+	sudo crontab ${CRON_DIR}/root_cron.${DATESTAMP}
 }
 
 # TODO: Add SSL setup using armeters from command line
+echo "step 1 - Start"
 sudo apt install memcached -y
 sudo apt install locate -y
 sudo updatedb
 
+echo "step 2 - Start"
 disable_banner
+
+echo "step 3 - Start"
 setup_modify_php
+
+echo "step 4 - Start"
 setup_ssl
+
+echo "step 5 - Start"
 update_crontab
+
+echo "step 6 - Start"
 default_permissions
+
+echo "step 7 - Start"
 wp_install_plugins
+
+echo "step 8 - Start"
 wp_install_themes
+
+echo "step 9 - Start"
+sudo nginx -t && sudo /opt/bitnami/ctlscript.sh restart php-fpm nginx

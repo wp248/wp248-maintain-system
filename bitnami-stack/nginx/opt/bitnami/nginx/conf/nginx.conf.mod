@@ -1,4 +1,3 @@
-
 user  daemon daemon;
 		worker_processes  auto;
 

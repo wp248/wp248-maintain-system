@@ -35,12 +35,12 @@ opcache.revalidate_freq = 60
 # --------------------------------------------------------------------------------------------------------
 
 # Enable extension
-extension=memcached.so
+#extension=memcached.so
 
 [Session]
 # Overwrite setting
-session.save_handler = memcached
-session.save_path = "tpc://127.0.0.1:11211"
+#session.save_handler = memcached
+#session.save_path = "tpc://127.0.0.1:11211"
 
 
 # END WP248 Changes
