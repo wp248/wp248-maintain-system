@@ -85,6 +85,12 @@
 #Exit immediately if a command exits with a non-zero status.
 set -e
 
+# =============================================================================
+# Modifications for Bitnami
+# =============================================================================
+
+WP_CLI_DIR=/opt/bitnami/apps/wordpress/bin
+
 # Functions
 
 function is_file() {
@@ -118,7 +124,7 @@ function make_database_backup(){
 	local prefix=$1
 	local db_name db_date db_file
 
-	db_name=$(wp config get --constant=DB_NAME --path="$CURRENT_PATH" --allow-root)
+	db_name=$(${WP_CLI_DIR}/wp config get --constant=DB_NAME --path="$CURRENT_PATH" --allow-root)
 	db_date=$(date +"%Y-%m-%d")
 	db_file="wp-update-${prefix}-${db_date}.sql"
 
@@ -131,7 +137,7 @@ function make_database_backup(){
 	done
 
 	printf "Creating a backup of the %s database %s updating...\n" "$db_name" "$prefix"
-	wp db export "$db_file" --path="$CURRENT_PATH" --allow-root
+	${WP_CLI_DIR}/wp db export "$db_file" --path="$CURRENT_PATH" --allow-root
 
 	mv "$db_file" "$BACKUP_PATH/$db_file"
 
@@ -152,7 +158,7 @@ function update_wp_core(){
 	local update
 
 	printf "Checking WordPress version...\n"
-	update=$(wp core check-update --field=version --format=count --path="$CURRENT_PATH" --allow-root)
+	update=$(${WP_CLI_DIR}/wp core check-update --field=version --format=count --path="$CURRENT_PATH" --allow-root)
 
 	if [[ -z $update ]]; then
 		printf "WordPress is at the latest version\n"
@@ -171,7 +177,7 @@ function update_wp_core(){
 	maybe_do_database_backup
 
 	printf "Updating WordPress\n"
-	wp core update --allow-root
+	${WP_CLI_DIR}/wp core update --allow-root
 
 	UPDATE_TRANSLATIONS=true
 }
@@ -180,7 +186,7 @@ function update_language(){
 	local update
 
 	printf "Checking translations...\n"
-	update=$(wp core language list --update=available --format=csv --field=language --path="$CURRENT_PATH" --allow-root)
+	update=$(${WP_CLI_DIR}/wp core language list --update=available --format=csv --field=language --path="$CURRENT_PATH" --allow-root)
 
 	if [[ -z $update ]]; then
 		printf "No language updates available\n"
@@ -189,7 +195,7 @@ function update_language(){
 
 	printf "New translations available.\n"
 	if [[ "$USE_PROMPT" = true ]]; then
-		wp core language list --update=available --path="$CURRENT_PATH" --allow-root
+		${WP_CLI_DIR}/wp core language list --update=available --path="$CURRENT_PATH" --allow-root
 		read -p "Do you want to update translations? [y/n]" -r
 		if ! [[ $REPLY = "Y" ||  $REPLY = "y" ]]; then
 			printf "Stopped updating translations\n"
@@ -200,17 +206,17 @@ function update_language(){
 	maybe_do_database_backup
 
 	printf "Updating translations\n"
-	wp core language update --path="$CURRENT_PATH" --allow-root
+	${WP_CLI_DIR}/wp core language update --path="$CURRENT_PATH" --allow-root
 }
 
 function update_asset(){
 	local asset_type=$1
 	local asset_path update
 
-	asset_path=$(wp "$asset_type" path --path="$CURRENT_PATH" --allow-root)
+	asset_path=$(${WP_CLI_DIR}/wp "$asset_type" path --path="$CURRENT_PATH" --allow-root)
 
 	printf "Checking %s updates...\n" "$asset_type"
-	update=$(wp "$asset_type" list --update=available --number=1 --format=count --path="$CURRENT_PATH" --allow-root)
+	update=$(${WP_CLI_DIR}/wp "$asset_type" list --update=available --number=1 --format=count --path="$CURRENT_PATH" --allow-root)
 
 	if [[ $update = 0 ]]; then
 		printf "No %s updates available\n" "$asset_type"
@@ -220,7 +226,7 @@ function update_asset(){
 	printf "Updating %ss\n" "$asset_type"
 
 	if [[ "$USE_PROMPT" = true ]]; then
-		wp "$asset_type" update --all --dry-run --path="$CURRENT_PATH" --allow-root
+		${WP_CLI_DIR}/wp "$asset_type" update --all --dry-run --path="$CURRENT_PATH" --allow-root
 
 		read -p "Do you want to update all ${asset_type}s [y/n]" -r
 		if ! [[ $REPLY = "Y" ||  $REPLY = "y" ]]; then
@@ -244,7 +250,7 @@ function update_asset(){
 	maybe_do_database_backup
 
 	printf "Updating %ss\n" "$asset_type"
-	wp "$asset_type" update --all --path="$CURRENT_PATH" --allow-root
+	${WP_CLI_DIR}/wp "$asset_type" update --all --path="$CURRENT_PATH" --allow-root
 
 	UPDATE_TRANSLATIONS=true
 }
@@ -280,14 +286,14 @@ function update_comments() {
 
 	printf "Checking %s comments...\n" "$status"
 
-	count=$(wp comment list --number=1 --status="$status" --format=count --path="$CURRENT_PATH" --allow-root)
+	count=$(${WP_CLI_DIR}/wp comment list --number=1 --status="$status" --format=count --path="$CURRENT_PATH" --allow-root)
 	if [[ $count = 0 ]]; then
 		printf "No %s comments found\n" "$status"
 		return 0
 	fi
 
 	if [[ "$USE_PROMPT" = true ]]; then
-		wp comment list --status="$status" --fields=ID,comment_author,comment_author_email,comment_approved,comment_content --path="$CURRENT_PATH" --allow-root
+		${WP_CLI_DIR}/wp comment list --status="$status" --fields=ID,comment_author,comment_author_email,comment_approved,comment_content --path="$CURRENT_PATH" --allow-root
 		read -p "Do you want to delete all ${status} comments [y/n]" -r
 		if ! [[ $REPLY = "Y" ||  $REPLY = "y" ]]; then
 			printf "Stopped deleting %s comments\n" "$status"
@@ -298,7 +304,7 @@ function update_comments() {
 	maybe_do_database_backup
 
 	printf "Deleting %s comments\n" "$status"
-	wp comment delete "$(wp comment list --status="$status" --format=ids --path="$CURRENT_PATH" --allow-root)" --path="$CURRENT_PATH" --allow-root
+	${WP_CLI_DIR}/wp comment delete "$(${WP_CLI_DIR}/wp comment list --status="$status" --format=ids --path="$CURRENT_PATH" --allow-root)" --path="$CURRENT_PATH" --allow-root
 }
 
 # =============================================================================
@@ -414,7 +420,7 @@ if [[ -z "$CURRENT_DIR" ]]; then
 fi
 
 # Check if WordPress is installed.
-if ! wp core is-installed --path="$CURRENT_PATH" --allow-root 2> /dev/null; then
+if ! ${WP_CLI_DIR}/wp core is-installed --path="$CURRENT_PATH" --allow-root 2> /dev/null; then
 	printf "No WordPress website found in: %s\n%s\n" "$CURRENT_PATH" "$QUIT_MSG"
 	exit 1
 fi
