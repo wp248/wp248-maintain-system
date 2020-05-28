@@ -27,8 +27,8 @@ types {
 		font/woff                                        woff;
 		font/woff2                                       woff2;
 		application/x-font-ttf                           ttf;
-		application/font-woff                            woff;
-		application/font-woff2                           woff2;
+		#application/font-woff                            woff;
+		#application/font-woff2                           woff2;
 
 		application/java-archive                         jar war ear;
 		application/json                                 json;

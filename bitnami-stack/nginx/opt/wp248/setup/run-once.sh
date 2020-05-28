@@ -68,6 +68,7 @@ function wp_install_plugins() {
 					  "redirection",
 					  "really-simple-ssl",
 					  "post-smtp",
+					  "imagify",
 					  "wps-hide-login");
 
 	for wp_plugin in "${wp_plugins[@]}"; do

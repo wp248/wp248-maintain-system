@@ -1,6 +1,6 @@
 	# ===========================================================================
 	# Note:
-	# 		Search and replace domain: example.com  with you own domain
+	#      Search and replace domain: example.com  with you own domain
 	# ===========================================================================
 
     # Force HTTP 2 HTTPS Redirection
@@ -44,8 +44,9 @@
         #
         #include "/opt/bitnami/nginx/conf/bitnami/phpfastcgi.conf";
         include "/opt/bitnami/nginx/conf/bitnami/bitnami-apps-prefix.conf";
-        include "/opt/bitnami/nginx/conf/rocket-nginx.conf";
-        include "/opt/bitnami/nginx/conf/imagify.conf";
+        #include "/opt/bitnami/nginx/conf/rocket-nginx.conf";
+        # Support Imagify and webp
+        #include "/opt/bitnami/nginx/conf/imagify.conf";
     }
 
     # CASE 4: Default Server SSL no redirection
@@ -66,9 +67,9 @@
         #include "/opt/bitnami/nginx/conf/bitnami/phpfastcgi.conf";
         include "/opt/bitnami/nginx/conf/bitnami/bitnami-apps-prefix.conf";
         # Add rocket-nginx
-        include "/opt/bitnami/nginx/conf/rocket-nginx.conf";
-        # Add imagify
-        include "/opt/bitnami/nginx/conf/imagify.conf";
+        #include "/opt/bitnami/nginx/conf/rocket-nginx.conf";
+        # Support Imagify and webp
+        #include "/opt/bitnami/nginx/conf/imagify.conf";
     }
 
     include "/opt/bitnami/nginx/conf/bitnami/bitnami-apps-vhosts.conf";
