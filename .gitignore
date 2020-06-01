@@ -27,3 +27,9 @@ coverage/
 
 # Ignoge local .env
 .env
+.env.local
+.env.staging
+git rm .env.local --cached
+git rm .env.staging --cached
+git rm .env --cached
+git commit -m "Stopped tracking .en env.local, and env.staging"
