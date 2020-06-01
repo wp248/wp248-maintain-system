@@ -24,3 +24,6 @@ yarn.lock
 Thumbs.db
 *.DS_Store
 coverage/
+
+# Ignoge local .env
+.env
