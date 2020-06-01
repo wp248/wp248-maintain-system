@@ -19,19 +19,6 @@ function renew_ssl() {
 									   --domains="${CRT_SECONDARY_DOMAIN}" \
 									   --path="/opt/bitnami/letsencrypt" renew
 
-	sudo mv ${CRT_DIR}/server.{crt,backup.${DATESTAMP}}
-	sudo mv ${CRT_DIR}/server.{key,backup.${DATESTAMP}}
-	sudo mv ${CRT_DIR}/server.{csr,backup.${DATESTAMP}}
-
-	# sudo ls -lah /opt/bitnami/letsencrypt/certificates/
-
-	sudo ln -sf ${LET_DIR}/${CRT_PRIMARY_DOMAIN}.key ${CRT_DIR}/server.key
-	sudo ln -sf ${LET_DIR}/${CRT_PRIMARY_DOMAIN}.crt ${CRT_DIR}/server.crt
-
-	# Modify Certificate owners and security
-	sudo chown root:root ${CRT_DIR}/server*
-	sudo chmod 600 ${CRT_DIR}/server*
-
 	# Restart Service
 	sudo /opt/bitnami/ctlscript.sh start nginx
 
