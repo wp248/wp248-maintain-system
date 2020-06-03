@@ -49,8 +49,10 @@ function disable_banner() {
 }
 
 function setup_modify_php() {
+	local PHP_DIR=/opt/bitnami/php/etc
+
 	# Create Backup
-	sudo cp ${PHP_DIR}/php. ${PHP_DIR}/php.{ini,backup.${DATESTAMP}}
+	sudo cp ${PHP_DIR}/php.{ini,backup.${DATESTAMP}}
 
 	sudo cat ${PHP_DIR}/php.mod >>  ${PHP_DIR}/php.ini
 }
