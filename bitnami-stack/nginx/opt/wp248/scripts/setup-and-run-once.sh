@@ -241,7 +241,7 @@ ${WP_CLI_PATH}/wp config get --path="${WP_SITE_ROOT}" --allow-root;
 
 
 printf "Step 08.01: Deactivate default plugin\n";
-wp_deactivate_plugins
+#wp_deactivate_plugins
 
 printf "Step 08.02: Install & activate a list of plugins\n";
 wp_install_plugins
