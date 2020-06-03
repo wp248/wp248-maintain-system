@@ -69,11 +69,13 @@ function setup_ssl() {
 									   --path="/opt/bitnami/letsencrypt" run
 
 	printf " >> backup current certificates files: server.crt \n";
-	sudo mv ${local_crt_dir}/server.{crt,backup.${DATESTAMP}}
+	sudo cp ${local_crt_dir}/server.{crt,backup.${DATESTAMP}}
+
 	printf " >> backup current certificates files: server.key \n";
-	sudo mv ${local_crt_dir}/server.{key,backup.${DATESTAMP}}
+	sudo cp ${local_crt_dir}/server.{key,backup.${DATESTAMP}}
+
 	printf " >> backup current certificates files: server.csr \n";
-	sudo mv ${local_crt_dir}/server.{csr,backup.${DATESTAMP}}
+	sudo cp ${local_crt_dir}/server.{csr,backup.${DATESTAMP}}
 
 	# sudo ls -lah /opt/bitnami/letsencrypt/certificates/
 
