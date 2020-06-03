@@ -126,15 +126,16 @@ function wp_deactivate_plugins() {
 					  "all-in-one-seo-pack",
 					  "all-in-one-wp-migration",
 					  "google-analytics-for-wordpress",
-					  "jetpack",
 					  "simple-tags",
 					  "wp-mail-smtp");
 
+# TODO: fix unload error on jetpack
+# Always generate error - need to fix
+#					  "jetpack",
+
 	for wp_plugin in "${wp_plugins[@]}"; do
 	   printf " >> deactivate ${wp_plugin} ....\n";
-	   ${WP_CLI_PATH}/wp plugin deactivate ${wp_plugin} --path="${WP_SITE_ROOT}" --allow-root;
-	   printf " >> delete ${wp_plugin} ....\n";
-	   ${WP_CLI_PATH}/wp plugin delete ${wp_plugin} --path="${WP_SITE_ROOT}" --allow-root;
+	   ${WP_CLI_PATH}/wp plugin deactivate ${wp_plugin} --uninstall --path="${WP_SITE_ROOT}" --allow-root;
 	done
 }
 
@@ -234,8 +235,8 @@ fi
 
 printf "Step 08.00: update wordpress configs\n";
 ${WP_CLI_PATH}/wp config set DISABLE_WP_CRON true --path="${WP_SITE_ROOT}" --allow-root;
-${WP_CLI_PATH}/wp config set WP_SITEURL "https://{PRIMARY_DOMAIN}/" --path="${WP_SITE_ROOT}" --allow-root;
-${WP_CLI_PATH}/wp config set WP_HOME "https://{PRIMARY_DOMAIN}/" --path="${WP_SITE_ROOT}" --allow-root;
+${WP_CLI_PATH}/wp config set WP_SITEURL "https://${PRIMARY_DOMAIN}/" --path="${WP_SITE_ROOT}" --allow-root;
+${WP_CLI_PATH}/wp config set WP_HOME "https://${PRIMARY_DOMAIN}/" --path="${WP_SITE_ROOT}" --allow-root;
 ${WP_CLI_PATH}/wp config get --path="${WP_SITE_ROOT}" --allow-root;
 
 
