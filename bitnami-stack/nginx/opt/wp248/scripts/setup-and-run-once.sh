@@ -67,15 +67,20 @@ function setup_ssl() {
 #	sudo /opt/bitnami/letsencrypt/lego --http --tls --accept-tos --email="${CRT_EMAIL}" ${CRT_DOMAINS} \
 #									   --path="/opt/bitnami/letsencrypt" run
 
-	printf " >> backup current certificates files: server.crt \n";
-	sudo cp ${CRT_DIR}/server.{crt,backup.crt.${DATESTAMP}}
+	if [ -f "${CRT_DIR}/server.crt" ]; then
+		printf " >> backup current certificates files: server.crt \n";
+		sudo cp ${CRT_DIR}/server.{crt,backup.crt.${DATESTAMP}}
+	fi
 
-	printf " >> backup current certificates files: server.key \n";
-	sudo cp ${CRT_DIR}/server.{key,backup.key.${DATESTAMP}}
+	if [ -f "${CRT_DIR}/server.key" ]; then
+		printf " >> backup current certificates files: server.key \n";
+		sudo cp ${CRT_DIR}/server.{key,backup.key.${DATESTAMP}}
+	fi
 
-	printf " >> backup current certificates files: server.csr \n";
-	sudo cp ${CRT_DIR}/server.{csr,backup.csr.${DATESTAMP}}
-
+	if [ -f "${CRT_DIR}/server.csr" ]; then
+		printf " >> backup current certificates files: server.csr \n";
+		sudo cp ${CRT_DIR}/server.{csr,backup.csr.${DATESTAMP}}
+	fi
 	# sudo ls -lah /opt/bitnami/letsencrypt/certificates/
 
 	sudo ln -sf ${LET_DIR}/${PRIMARY_DOMAIN}.key ${CRT_DIR}/server.key
