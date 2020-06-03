@@ -79,8 +79,8 @@ function setup_ssl() {
 
 	# sudo ls -lah /opt/bitnami/letsencrypt/certificates/
 
-	sudo ln -sf ${LET_DIR}/${CRT_PRIMARY_DOMAIN}.key ${CRT_DIR}/server.key
-	sudo ln -sf ${LET_DIR}/${CRT_PRIMARY_DOMAIN}.crt ${CRT_DIR}/server.crt
+	sudo ln -sf ${LET_DIR}/${PRIMARY_DOMAIN}.key ${CRT_DIR}/server.key
+	sudo ln -sf ${LET_DIR}/${PRIMARY_DOMAIN}.crt ${CRT_DIR}/server.crt
 
 	# Modify Certificate owners and security
 	sudo chown root:root ${CRT_DIR}/server*
