@@ -1,6 +1,6 @@
 # WP Update
 
-**Note**: This for used for maintance and bitnami specific.
+**Note**: This for used for maintance and bitnami specific. The files has been modify to support it
 
 A bash script to update WordPress core, plugins, themes and comments via SSH.
 
