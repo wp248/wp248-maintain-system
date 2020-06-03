@@ -132,9 +132,9 @@ function wp_deactivate_plugins() {
 
 	for wp_plugin in "${wp_plugins[@]}"; do
 	   printf " >> deactivate ${wp_plugin} ....\n";
-	   ${WP_CLI_PATH}/wp plugin deactivate ${wp_plugin} --activate --path="${WP_SITE_ROOT}" --allow-root;
+	   ${WP_CLI_PATH}/wp plugin deactivate ${wp_plugin} --path="${WP_SITE_ROOT}" --allow-root;
 	   printf " >> delete ${wp_plugin} ....\n";
-	   ${WP_CLI_PATH}/wp plugin delete ${wp_plugin} --activate --path="${WP_SITE_ROOT}" --allow-root;
+	   ${WP_CLI_PATH}/wp plugin delete ${wp_plugin} --path="${WP_SITE_ROOT}" --allow-root;
 	done
 }
 
