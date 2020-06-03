@@ -178,6 +178,7 @@ echo "step 1 - Start"
 sudo apt install memcached -y
 sudo apt install locate -y
 sudo apt install telnet -y
+sudo apt install git -y
 sudo updatedb
 
 echo "step 2 - Start"
