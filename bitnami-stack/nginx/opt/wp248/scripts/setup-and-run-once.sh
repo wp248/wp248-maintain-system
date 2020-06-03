@@ -59,7 +59,6 @@ function setup_modify_php() {
 
 
 function setup_ssl() {
-	local local_crt_dir=${CRT_DIR}
 	# Stop Service
 	printf " >> Stoping nginx service\n";
 	sudo /opt/bitnami/ctlscript.sh stop nginx
@@ -69,13 +68,13 @@ function setup_ssl() {
 									   --path="/opt/bitnami/letsencrypt" run
 
 	printf " >> backup current certificates files: server.crt \n";
-	sudo cp ${local_crt_dir}/server.{crt,backup.${DATESTAMP}}
+	sudo cp ${CRT_DIR}/server.{crt,backup.${DATESTAMP}}
 
 	printf " >> backup current certificates files: server.key \n";
-	sudo cp ${local_crt_dir}/server.{key,backup.${DATESTAMP}}
+	sudo cp ${CRT_DIR}/server.{key,backup.${DATESTAMP}}
 
 	printf " >> backup current certificates files: server.csr \n";
-	sudo cp ${local_crt_dir}/server.{csr,backup.${DATESTAMP}}
+	sudo cp ${CRT_DIR}/server.{csr,backup.${DATESTAMP}}
 
 	# sudo ls -lah /opt/bitnami/letsencrypt/certificates/
 
@@ -214,37 +213,38 @@ bash_apt_update
 printf "Step 04.00: Disable bitnami banner\n";
 disable_banner
 
-printf "Step 05.00: setup_modify_php\n";
-setup_modify_php
-
 printf "Step 05.00: setup ssl\n";
 setup_ssl
 
-printf "Step 06.00: Fixing site to write permissions\n";
+printf "Step 06.00: setup_modify_php\n";
+setup_modify_php
+
+
+printf "Step 07.00: Fixing site to write permissions\n";
 if [ -f "${DIR}/wp-fix-write-permission.sh" ]; then
 	source "${DIR}/wp-fix-write-permission.sh"
 else
 	printf "===========\n > write permission failed file: %s not found\n" "${DIR}/wp-fix-write-permission.sh"
 fi
 
-printf "Step 07.00: update wordpress configs\n";
+printf "Step 08.00: update wordpress configs\n";
 ${WP_CLI_PATH}/wp config set DISABLE_WP_CRON true --path="${WP_SITE_ROOT}" --allow-root;
 ${WP_CLI_PATH}/wp config set WP_SITEURL "https://{PRIMARY_DOMAIN}/" --path="${WP_SITE_ROOT}" --allow-root;
 ${WP_CLI_PATH}/wp config set WP_HOME "https://{PRIMARY_DOMAIN}/" --path="${WP_SITE_ROOT}" --allow-root;
 ${WP_CLI_PATH}/wp config get --path="${WP_SITE_ROOT}" --allow-root;
 
 
-printf "Step 07.01: Deactivate default plugin\n";
+printf "Step 08.01: Deactivate default plugin\n";
 wp_deactivate_plugins
 
-printf "Step 07.02: Install & activate a list of plugins\n";
+printf "Step 08.02: Install & activate a list of plugins\n";
 wp_install_plugins
 
 
-printf "Step 08.00: Install themes\n";
+printf "Step 09.00: Install themes\n";
 wp_install_themes
 
-printf "Step 09.00: Fixing site to write permissions after plugin install and activate\n";
+printf "Step 10.00: Fixing site to write permissions after plugin install and activate\n";
 if [ -f "${DIR}/wp-fix-write-permission.sh" ]; then
 	source "${DIR}/wp-fix-write-permission.sh"
 else
@@ -253,6 +253,6 @@ fi
 
 write_permissions
 
-printf "Step 010.00: restart services\n";
+printf "Step 011.00: restart services\n";
 sudo nginx -t && sudo /opt/bitnami/ctlscript.sh restart php-fpm nginx
 
