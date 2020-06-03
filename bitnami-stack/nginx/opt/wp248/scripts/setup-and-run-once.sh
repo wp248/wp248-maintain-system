@@ -208,7 +208,7 @@ printf "Step 02.00: Prepare domains list for certificates and nginx config\n";
 prep_domain
 
 printf "Step 02.01: Prepare domains list for certificates and nginx config\n";
-printf "===========\n > PRIMARY_DOMAIN: %s\n" "PRIMARY_DOMAIN"
+printf "===========\n > PRIMARY_DOMAIN: %s\n" "$PRIMARY_DOMAIN"
 printf "===========\n > CRT_DOMAINS: %s\n" "$CRT_DOMAINS"
 printf "===========\n > NGX_DOMAINS: %s\n" "$NGX_DOMAINS"
 
@@ -235,8 +235,8 @@ fi
 
 printf "Step 08.00: update wordpress configs\n";
 ${WP_CLI_PATH}/wp config set DISABLE_WP_CRON true --path="${WP_SITE_ROOT}" --allow-root;
-${WP_CLI_PATH}/wp config set WP_SITEURL "https://${PRIMARY_DOMAIN}/" --path="${WP_SITE_ROOT}" --allow-root;
-${WP_CLI_PATH}/wp config set WP_HOME "https://${PRIMARY_DOMAIN}/" --path="${WP_SITE_ROOT}" --allow-root;
+${WP_CLI_PATH}/wp config set WP_SITEURL "https://$PRIMARY_DOMAIN/" --path="${WP_SITE_ROOT}" --allow-root;
+${WP_CLI_PATH}/wp config set WP_HOME "https://$PRIMARY_DOMAIN/" --path="${WP_SITE_ROOT}" --allow-root;
 ${WP_CLI_PATH}/wp config get --path="${WP_SITE_ROOT}" --allow-root;
 
 
