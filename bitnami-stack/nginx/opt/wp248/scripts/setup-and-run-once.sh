@@ -59,16 +59,21 @@ function setup_modify_php() {
 
 
 function setup_ssl() {
-
+	local local_crt_dir=${CRT_DIR}
 	# Stop Service
+	printf " >> Stoping nginx service\n";
 	sudo /opt/bitnami/ctlscript.sh stop nginx
 
+	printf " >> Stoping requesting new certificates\n";
 	sudo /opt/bitnami/letsencrypt/lego --http --tls --accept-tos --email="${CRT_EMAIL}" ${CRT_DOMAINS} \
 									   --path="/opt/bitnami/letsencrypt" run
 
-	sudo mv ${CRT_DIR}/server.{crt,backup.${DATESTAMP}}
-	sudo mv ${CRT_DIR}/server.{key,backup.${DATESTAMP}}
-	sudo mv ${CRT_DIR}/server.{csr,backup.${DATESTAMP}}
+	printf " >> backup current certificates files: server.crt \n";
+	sudo mv ${local_crt_dir}/server.{crt,backup.${DATESTAMP}}
+	printf " >> backup current certificates files: server.key \n";
+	sudo mv ${local_crt_dir}/server.{key,backup.${DATESTAMP}}
+	printf " >> backup current certificates files: server.csr \n";
+	sudo mv ${local_crt_dir}/server.{csr,backup.${DATESTAMP}}
 
 	# sudo ls -lah /opt/bitnami/letsencrypt/certificates/
 
