@@ -36,6 +36,92 @@ function prep_domain() {
 	done
 }
 
+function step1(){
+	# Create Backup for current config
+	printf "Step 1.1: make backup  \r\n"
+	if ! [ -f "/opt/bitnami/apps/wordpress/conf/nginx-app.conf" ]; then
+		printf "config not found: %s\n%s\n" "/opt/bitnami/apps/wordpress/conf/nginx-app.conf" "$QUIT_MSG"
+		exit 1
+	fi
+	sudo cp /opt/bitnami/apps/wordpress/conf/nginx-app.conf /opt/bitnami/apps/wordpress/conf/nginx-app.conf.${DATESTAMP}
+
+	printf "Step 1.2: modify config  \r\n"
+	if ! [ -f "/opt/bitnami/apps/wordpress/conf/wp248-cors.conf" ]; then
+		printf "config not found: %s\n%s\n" "/opt/bitnami/apps/wordpress/conf/wp248-cors.conf" "$QUIT_MSG"
+		exit 1
+	fi
+	if ! [ -f "/opt/bitnami/apps/wordpress/conf/nginx-app.conf" ]; then
+		printf "config not found: %s\n%s\n" "/opt/bitnami/apps/wordpress/conf/nginx-app.conf" "$QUIT_MSG"
+		exit 1
+	fi
+	echo "include \"/opt/bitnami/apps/wordpress/conf/wp248-cors.conf\";" >> /opt/bitnami/apps/wordpress/conf/nginx-app.conf
+}
+
+function step2(){
+	printf "Step 2.1: make backup  \r\n"
+	if ! [ -f "/opt/bitnami/nginx/conf/nginx.conf" ]; then
+		printf "config not found: %s\n%s\n" "/opt/bitnami/nginx/conf/nginx.conf" "$QUIT_MSG"
+		exit 1
+	fi
+	if ! [ -f "/opt/bitnami/nginx/conf/wp248-bitnami-nginx.conf" ]; then
+		printf "config not found: %s\n%s\n" "/opt/bitnami/nginx/conf/wp248-bitnami-nginx.conf" "$QUIT_MSG"
+		exit 1
+	fi
+
+	sudo cp /opt/bitnami/nginx/conf/nginx.conf /opt/bitnami/nginx/conf/nginx.conf.${DATESTAMP}
+
+	printf "Step 2.2: modify config  \r\n"
+	# Do remove the enter at the end , needed for CRLF
+	sudo sed -i '\/include \"\/opt\/bitnami\/nginx\/conf\/bitnami\/bitnami.conf\"/i \
+	include "\/opt\/bitnami\/nginx\/conf\/wp248-bitnami-nginx.conf\"; \
+	'  /opt/bitnami/nginx/conf/nginx.conf
+
+}
+
+function step3(){
+	printf "Step 3.1: make backup  \r\n"
+	if ! [ -f "/opt/bitnami/nginx/conf/mime.types" ]; then
+		printf "config not found: %s\n%s\n" "/opt/bitnami/nginx/conf/mime.types" "$QUIT_MSG"
+		exit 1
+	fi
+
+	sudo mv /opt/bitnami/nginx/conf/mime.types /opt/bitnami/nginx/conf/mime.types.${DATESTAMP}
+	printf "Step 3.2: modify config  \r\n"
+	sudo cp /opt/bitnami/nginx/conf/mime.types.mod /opt/bitnami/nginx/conf/mime.types
+}
+
+function step4(){
+	printf "Step 4.1: make backup  \r\n"
+	sudo mv /opt/bitnami/nginx/conf/bitnami/bitnami.conf /opt/bitnami/nginx/conf/bitnami/bitnami.conf.${DATESTAMP}
+
+	printf "Step 4.2: replacing config  \r\n"
+	if ! [ -f "/opt/bitnami/nginx/conf/bitnami/bitnami.conf.mod" ]; then
+		printf "config not found: %s\n%s\n" "/opt/bitnami/nginx/conf/bitnami/bitnami.conf.mod" "$QUIT_MSG"
+		exit 1
+	fi
+	sudo sed 's/WP248_PRIMARY_DOMAIN/${PRIMARY_DOMAIN}/g' /opt/bitnami/nginx/conf/bitnami/bitnami.conf.mod  > "${DIR}/tmp/bitnami.conf.step1"
+
+
+	printf "Step 4.3: replacing config  \r\n"
+	if ! [ -f "${DIR}/tmp/bitnami.conf.step1" ]; then
+		printf "config not found: %s\n%s\n" "${DIR}/tmp/bitnami.conf.step1" "$QUIT_MSG"
+		exit 1
+	fi
+
+	sudo sed 's/WP248_NGX_DOMAINS/${NGX_DOMAINS}/g' "${DIR}/tmp/bitnami.conf.step1"  > "${DIR}/tmp/bitnami.conf.step2"
+
+	printf "Step 4.4: replacing config  \r\n"
+	if ! [ -f "${DIR}/tmp/bitnami.conf.step2" ]; then
+		printf "config not found: %s\n%s\n" "${DIR}/tmp/bitnami.conf.step2" "$QUIT_MSG"
+		exit 1
+	fi
+
+	sudo sed 's/WP248_NGX_DOMAINS_WITHOUT_PRIMARY/${NGX_DOMAINS_WITHOUT_PRIMARY}/g' ${DIR}/tmp/bitnami.conf.step2  > ${DIR}/tmp/bitnami.conf.step3
+
+	printf "Step 4.5: replacing config  \r\n"
+	sudo mv /opt/wp248/setup/bitnami.conf /opt/bitnami/nginx/conf/bitnami/bitnami.conf
+
+}
 # =============================================================================
 # Variables
 # =============================================================================
@@ -110,90 +196,17 @@ fi
 
 printf "=========[ START nginx CONFIG ${DATESTAMP} ]=========\r\n"
 printf "Step 1: Fixing /opt/bitnami/apps/wordpress/conf/nginx-app.conf \r\n"
-
-# Create Backup for current config
-printf "Step 1.1: make backup  \r\n"
-if ! [ -f "/opt/bitnami/apps/wordpress/conf/nginx-app.conf" ]; then
-	printf "config not found: %s\n%s\n" "/opt/bitnami/apps/wordpress/conf/nginx-app.conf" "$QUIT_MSG"
-	exit 1
-fi
-sudo cp /opt/bitnami/apps/wordpress/conf/nginx-app.conf /opt/bitnami/apps/wordpress/conf/nginx-app.conf.${DATESTAMP}
-
-printf "Step 1.2: modify config  \r\n"
-if ! [ -f "/opt/bitnami/apps/wordpress/conf/wp248-cors.conf" ]; then
-	printf "config not found: %s\n%s\n" "/opt/bitnami/apps/wordpress/conf/wp248-cors.conf" "$QUIT_MSG"
-	exit 1
-fi
-if ! [ -f "/opt/bitnami/apps/wordpress/conf/nginx-app.conf" ]; then
-	printf "config not found: %s\n%s\n" "/opt/bitnami/apps/wordpress/conf/nginx-app.conf" "$QUIT_MSG"
-	exit 1
-fi
-echo "include \"/opt/bitnami/apps/wordpress/conf/wp248-cors.conf\";" >> /opt/bitnami/apps/wordpress/conf/nginx-app.conf
-
+step1
 
 printf "Step 2: Fixing /opt/bitnami/nginx/conf/nginx.conf  \r\n"
-printf "Step 2.1: make backup  \r\n"
-if ! [ -f "/opt/bitnami/nginx/conf/nginx.conf" ]; then
-	printf "config not found: %s\n%s\n" "/opt/bitnami/nginx/conf/nginx.conf" "$QUIT_MSG"
-	exit 1
-fi
-if ! [ -f "/opt/bitnami/nginx/conf/wp248-bitnami-nginx.conf" ]; then
-	printf "config not found: %s\n%s\n" "/opt/bitnami/nginx/conf/wp248-bitnami-nginx.conf" "$QUIT_MSG"
-	exit 1
-fi
-
-sudo cp /opt/bitnami/nginx/conf/nginx.conf /opt/bitnami/nginx/conf/nginx.conf.${DATESTAMP}
-
-printf "Step 2.2: modify config  \r\n"
-# Do remove the enter at the end , needed for CRLF
-sudo sed -i '\/include \"\/opt\/bitnami\/nginx\/conf\/bitnami\/bitnami.conf\"/i \
-include "\/opt\/bitnami\/nginx\/conf\/wp248-bitnami-nginx.conf\"; \
-'  /opt/bitnami/nginx/conf/nginx.conf
+step2
 
 printf "Step 3: Fixing /opt/bitnami/nginx/conf/mime.types  \r\n"
-printf "Step 3.1: make backup  \r\n"
-if ! [ -f "/opt/bitnami/nginx/conf/mime.types" ]; then
-	printf "config not found: %s\n%s\n" "/opt/bitnami/nginx/conf/mime.types" "$QUIT_MSG"
-	exit 1
-fi
-
-sudo mv /opt/bitnami/nginx/conf/mime.types /opt/bitnami/nginx/conf/mime.types.${DATESTAMP}
-printf "Step 3.2: modify config  \r\n"
-sudo cp /opt/bitnami/nginx/conf/mime.types.mod /opt/bitnami/nginx/conf/mime.types
+step3
 #
 #
 printf "Step 4: Fixing /opt/bitnami/nginx/conf/bitnami/bitnami.conf  \r\n"
-printf "Step 4.1: make backup  \r\n"
-sudo mv /opt/bitnami/nginx/conf/bitnami/bitnami.conf /opt/bitnami/nginx/conf/bitnami/bitnami.conf.${DATESTAMP}
-
-printf "Step 4.2: replacing config  \r\n"
-if ! [ -f "/opt/bitnami/nginx/conf/bitnami/bitnami.conf.mod" ]; then
-	printf "config not found: %s\n%s\n" "/opt/bitnami/nginx/conf/bitnami/bitnami.conf.mod" "$QUIT_MSG"
-	exit 1
-fi
-sudo sed 's/WP248_PRIMARY_DOMAIN/${PRIMARY_DOMAIN}/g' /opt/bitnami/nginx/conf/bitnami/bitnami.conf.mod  > "${DIR}/tmp/bitnami.conf.step1"
-
-
-printf "Step 4.3: replacing config  \r\n"
-if ! [ -f "${DIR}/tmp/bitnami.conf.step1" ]; then
-	printf "config not found: %s\n%s\n" "${DIR}/tmp/bitnami.conf.step1" "$QUIT_MSG"
-	exit 1
-fi
-
-sudo sed 's/WP248_NGX_DOMAINS/${NGX_DOMAINS}/g' "${DIR}/tmp/bitnami.conf.step1"  > "${DIR}/tmp/bitnami.conf.step2"
-
-printf "Step 4.4: replacing config  \r\n"
-if ! [ -f "${DIR}/tmp/bitnami.conf.step2" ]; then
-	printf "config not found: %s\n%s\n" "${DIR}/tmp/bitnami.conf.step2" "$QUIT_MSG"
-	exit 1
-fi
-
-sudo sed 's/WP248_NGX_DOMAINS_WITHOUT_PRIMARY/${NGX_DOMAINS_WITHOUT_PRIMARY}/g' ${DIR}/tmp/bitnami.conf.step2  > ${DIR}/tmp/bitnami.conf.step3
-
-printf "Step 4.5: replacing config  \r\n"
-sudo mv /opt/wp248/setup/bitnami.conf /opt/bitnami/nginx/conf/bitnami/bitnami.conf
-
-
+step4
 
 printf "Step 5: Test nginx config & restart services  \r\n"
 
