@@ -7,8 +7,8 @@
     # CASE 1: wildcard ssl Force HTTP 2 HTTPS Redirection on any domain that not have an app
     server {
         listen       80;
-        server_name  *.example.com example.com;
-        return 301 https://example.com$request_uri;
+        server_name  WP248_NGX_DOMAINS;
+        return 301 https://WP248_PRIMARY_DOMAIN$request_uri;
         #include "/opt/bitnami/nginx/conf/bitnami/phpfastcgi.conf";
         include "/opt/bitnami/nginx/conf/bitnami/bitnami-apps-prefix.conf";
     }
@@ -29,9 +29,9 @@
 
     server {
         listen       443 ssl;
-        server_name  *.example.com;
+        server_name  WP248_NGX_DOMAINS_WITHOUT_PRIMARY;
 
-        return 301 https://example.com$request_uri;
+        return 301 https://WP248_PRIMARY_DOMAIN$request_uri;
 
         ssl_certificate      server.crt;
         ssl_certificate_key  server.key;
