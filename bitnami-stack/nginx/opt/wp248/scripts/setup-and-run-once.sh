@@ -49,7 +49,7 @@ function disable_banner() {
 }
 
 function setup_modify_php() {
-	local PHP_DIR=/opt/bitnami/php/etc
+	#local PHP_DIR=/opt/bitnami/php/etc
 
 	# Create Backup
 	sudo cp ${PHP_DIR}/php.{ini,backup.${DATESTAMP}}
@@ -62,23 +62,20 @@ function setup_ssl() {
 	# Stop Service
 	printf " >> Stoping nginx service\n";
 	sudo /opt/bitnami/ctlscript.sh stop nginx
-
-	printf " >> Stoping requesting new certificates\n";
-	sudo /opt/bitnami/letsencrypt/lego --http --tls --accept-tos --email="${CRT_EMAIL}" ${CRT_DOMAINS} \
-									   --path="/opt/bitnami/letsencrypt" run
+#
+#	printf " >> Stoping requesting new certificates\n";
+#	sudo /opt/bitnami/letsencrypt/lego --http --tls --accept-tos --email="${CRT_EMAIL}" ${CRT_DOMAINS} \
+#									   --path="/opt/bitnami/letsencrypt" run
 
 	printf " >> backup current certificates files: server.crt \n";
-	#sudo cp ${CRT_DIR}/server.{crt,backup.${DATESTAMP}}
-	sudo cp ${CRT_DIR}/server.crt ${CRT_DIR}/server.crt.backup.${DATESTAMP}
+	sudo cp ${CRT_DIR}/server.{crt,backup.${DATESTAMP}}
 
 
 	printf " >> backup current certificates files: server.key \n";
-	#sudo cp ${CRT_DIR}/server.{key,backup.${DATESTAMP}}
-	sudo cp ${CRT_DIR}/server.key ${CRT_DIR}/server.key.backup.${DATESTAMP}
+	sudo cp ${CRT_DIR}/server.{key,backup.${DATESTAMP}}
 
 	printf " >> backup current certificates files: server.csr \n";
-	#sudo cp ${CRT_DIR}/server.{csr,backup.${DATESTAMP}}
-	sudo cp ${CRT_DIR}/server.csr ${CRT_DIR}/server.csr.backup.${DATESTAMP}
+	sudo cp ${CRT_DIR}/server.{csr,backup.${DATESTAMP}}
 
 	# sudo ls -lah /opt/bitnami/letsencrypt/certificates/
 
