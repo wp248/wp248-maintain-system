@@ -115,7 +115,7 @@ function wp_install_plugins() {
 
 	for wp_plugin in "${wp_plugins[@]}"; do
 	   printf " >> Installing ${wp_plugin} ....\n";
-	   ${WP_CLI_PATH}/wp plugin install ${wp_plugin} --activate --path="${WP_SITE_ROOT}" --allow-root;
+	   ${WP_CLI_PATH}/wp plugin install ${wp_plugin} --path="${WP_SITE_ROOT}" --allow-root;
 	done
 }
 
