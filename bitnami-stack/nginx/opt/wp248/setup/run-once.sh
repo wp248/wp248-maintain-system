@@ -191,6 +191,7 @@ echo "step 4 - Start"
 setup_ssl
 
 echo "step 5 - Start"
+
 write_permissions
 
 echo "step 6 - Start"
