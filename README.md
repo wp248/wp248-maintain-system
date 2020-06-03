@@ -57,3 +57,15 @@ sudo nano ~/change-permission.sh
 ~/change-permission.sh
 
 ``
+
+New setup version:
+```
+cp /opt/wp248/script/conf/.env.example /opt/wp248/script/conf/.env
+
+# Modify the enviroments file
+nano /opt/wp248/script/conf/.env
+
+# execute script
+/opt/wp248/scripts/setup-and-run-once.sh
+```
+
