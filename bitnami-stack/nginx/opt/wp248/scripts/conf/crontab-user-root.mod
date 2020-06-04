@@ -36,12 +36,12 @@
 */15 * * * * su daemon -s /bin/sh -c "cd /opt/bitnami/apps/wordpress/htdocs/; /opt/bitnami/php/bin/php -q wp-cron.php"
 
 # Wordpress Backup and Keep all updates
-10 8 * * * cron-wp-complete-update.sh /opt/wp248/scripts/conf> /dev/null
-#10 8 * * * cron-wp-complete-update.sh /opt/wp248/scripts/conf>>/opt/bitnami/apps/wordpress/wp-update-backups/db/cron.log;
+10 8 * * * /opt/wp248/scripts/cron-wp-complete-update.sh /opt/wp248/scripts/conf> /dev/null
+#10 8 * * * /opt/wp248/scripts/cron-wp-complete-update.sh /opt/wp248/scripts/conf>>/opt/bitnami/apps/wordpress/wp-update-backups/db/cron.log;
 
-#15 8 * * * cron-wp-upd-plugins.sh /opt/wp248/scripts/conf> /dev/null
-#20 8 * * * cron-wp-upd-themes.sh /opt/wp248/scripts/conf> /dev/null
-#25 8 * * * cron-wp-upd-translations.sh /opt/wp248/scripts/conf> /dev/null
+#15 8 * * * /opt/wp248/scripts/cron-wp-upd-plugins.sh /opt/wp248/scripts/conf> /dev/null
+#20 8 * * * /opt/wp248/scripts/cron-wp-upd-themes.sh /opt/wp248/scripts/conf> /dev/null
+#25 8 * * * /opt/wp248/scripts/cron-wp-upd-translations.sh /opt/wp248/scripts/conf> /dev/null
 
 
 # Cleanup time Dont keep backup over 21 days
@@ -50,13 +50,13 @@
 
 # Wordpress Keep it clean
 10 7 * * * su daemon -s /bin/sh -c "find /opt/bitnami/apps/wordpress/htdocs/wp-content/cache/ -mtime +7 -delete"
-15 7 * * * su daemon -s /bin/sh -c "cd /opt/bitnami/apps/wordpress/htdocs/; /opt/bitnami/apps/wordpress/bin/wp cache flush --allow-root"
-20 7 * * * su daemon -s /bin/sh -c "cd /opt/bitnami/apps/wordpress/htdocs/; /opt/bitnami/apps/wordpress/bin/wp cache clear --allow-root"
+15 7 * * * su daemon -s /bin/sh -c "cd /opt/bitnami/apps/wordpress/htdocs/; /opt/bitnami/apps/wordpress/bin/wp cache flush --path="/opt/bitnami/apps/wordpress/htdocs" --allow-root"
+20 7 * * * su daemon -s /bin/sh -c "cd /opt/bitnami/apps/wordpress/htdocs/; /opt/bitnami/apps/wordpress/bin/wp cache clear --path="/opt/bitnami/apps/wordpress/htdocs" --allow-root"
 
 # Plugin Specific: autoptimize - avoid cache size is getting big
-# 24 2 * * * su daemon -s /bin/sh -c "cd /opt/bitnami/apps/wordpress/htdocs/; /opt/bitnami/apps/wordpress/bin/wp autoptimize clear --allow-root"
+# 24 2 * * * su daemon -s /bin/sh -c "cd /opt/bitnami/apps/wordpress/htdocs/; /opt/bitnami/apps/wordpress/bin/wp autoptimize clear --path="/opt/bitnami/apps/wordpress/htdocs"  --allow-root"
 
 # SSL update once in a month at:
-0 0 1 * * cron-renew-ssl-certificates.sh /opt/wp248/scripts/conf> /dev/null
+0 0 1 * * /opt/wp248/scripts/cron-renew-ssl-certificates.sh /opt/wp248/scripts/conf> /dev/null
 
 # Plugin Specific: wordfance: Unable to open file for reading and writing.

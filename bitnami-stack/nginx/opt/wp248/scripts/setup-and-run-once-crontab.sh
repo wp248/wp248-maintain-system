@@ -16,42 +16,26 @@ function is_dir() {
 	[[ -d $dir ]]
 }
 
+function update_crontab(){
 
-function prep_domain() {
+    local CRON_DIR="${DIR}/conf/"
 
-	for i in ${!DOMAINS[@]};
-	do
+	#write out current crontab
+	echo "cron 1:"${CRON_DIR}/root_cron.${DATESTAMP};
+	if !(sudo crontab -l > ${CRON_DIR}/root_cron.${DATESTAMP}); then
+		echo "Root cron is empty"
+	fi
+	#echo new cron into cron file
+	echo "cron 2:"${CRON_DIR}/crontab-user-root.mod;
+	echo "cron 3:"${CRON_DIR}/root_cron.${DATESTAMP};
 
-		CRT_DOMAINS+=$(printf "%s"  " --domains=${DOMAINS[$i]}")
-		CRT_DOMAINS+=$(printf "%s"  " --domains=www.${DOMAINS[$i]}")
+	cat ${CRON_DIR}/crontab-user-root.mod >> ${CRON_DIR}/root_cron.${DATESTAMP}
 
-		NGX_DOMAINS+=$(printf "%s"  " *.${DOMAINS[$i]}")
-		NGX_DOMAINS+=$(printf "%s"  " ${DOMAINS[$i]}")
+	#install new cron file
+	echo "cron 3:" ${CRON_DIR}/root_cron.${DATESTAMP}
 
-		if [[ "$PRIMARY_DOMAIN" != "${DOMAINS[$i]}" ]]; then
-			NGX_DOMAINS_WITHOUT_PRIMARY+=$(printf "%s"  " *.${DOMAINS[$i]}")
-			NGX_DOMAINS_WITHOUT_PRIMARY+=$(printf "%s"  " ${DOMAINS[$i]}")
-		else
-			NGX_DOMAINS_WITHOUT_PRIMARY+=$(printf "%s"  " *.${DOMAINS[$i]}")
-		fi
-	done
+	sudo crontab ${CRON_DIR}/root_cron.${DATESTAMP}
 }
-
-function renew_ssl()
-{
-
-	# Stop Service
-	printf " >> Stoping nginx service\n";
-	sudo /opt/bitnami/ctlscript.sh stop nginx
-
-	printf " >> Stoping requesting new certificates\n";
-#	sudo /opt/bitnami/letsencrypt/lego --http --tls --accept-tos --email="${CRT_EMAIL}" ${CRT_DOMAINS} \
-#									   --path="/opt/bitnami/letsencrypt" renew
-	# Restart Service
-	sudo /opt/bitnami/ctlscript.sh start nginx
-
-}
-
 
 
 # =============================================================================
@@ -107,23 +91,6 @@ fi
 
 # Use the param files
 source "${CONF_FILE}";
+printf "=========[ START crontab ${DATESTAMP} ]=========\r\n"
 
-printf "Step 02.00: Prepare domains list for certificates and nginx config\n";
-prep_domain
-
-printf "Step 02.01: Prepare domains list for certificates and nginx config\n";
-printf "===========\n > PRIMARY_DOMAIN: %s\n" "$PRIMARY_DOMAIN"
-printf "===========\n > CRT_DOMAINS: %s\n" "$CRT_DOMAINS"
-
-
-printf "Step 02.01: Verify tmp directory\n";
-if ! [ -d "${DIR}/tmp/" ]; then
-	sudo mkdir -p $DIR/tmp
-    sudo chown -R bitnami:daemon ${DIR}/tmp/;
-    sudo chmod -Rf 775 ${DIR}/tmp/;
-fi
-
-renew_ssl
-#sudo nginx -t && sudo /opt/bitnami/ctlscript.sh restart php-fpm nginx
-
-
+update_crontab

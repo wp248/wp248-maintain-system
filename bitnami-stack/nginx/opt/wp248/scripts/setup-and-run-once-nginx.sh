@@ -22,14 +22,15 @@ function prep_domain() {
 	for i in ${!DOMAINS[@]};
 	do
 
-		CRT_DOMAINS+=$(printf "%s"  " --domains=≈≈}")
-		NGX_DOMAINS+=$(printf "%s"  " ${DOMAINS[$i]}")
-		NGX_DOMAINS+=$(printf "%s"  " *.${DOMAINS[$i]}")
+		CRT_DOMAINS+=$(printf "%s"  " --domains=${DOMAINS[$i]}")
+		CRT_DOMAINS+=$(printf "%s"  " --domains=www.${DOMAINS[$i]}")
 
+		NGX_DOMAINS+=$(printf "%s"  " *.${DOMAINS[$i]}")
+		NGX_DOMAINS+=$(printf "%s"  " ${DOMAINS[$i]}")
 
 		if [[ "$PRIMARY_DOMAIN" != "${DOMAINS[$i]}" ]]; then
-			NGX_DOMAINS_WITHOUT_PRIMARY+=$(printf "%s"  " ${DOMAINS[$i]}")
 			NGX_DOMAINS_WITHOUT_PRIMARY+=$(printf "%s"  " *.${DOMAINS[$i]}")
+			NGX_DOMAINS_WITHOUT_PRIMARY+=$(printf "%s"  " ${DOMAINS[$i]}")
 		else
 			NGX_DOMAINS_WITHOUT_PRIMARY+=$(printf "%s"  " *.${DOMAINS[$i]}")
 		fi
@@ -85,43 +86,44 @@ function step3(){
 		exit 1
 	fi
 
-	sudo mv /opt/bitnami/nginx/conf/mime.types /opt/bitnami/nginx/conf/mime.types.${DATESTAMP}
+	sudo cp /opt/bitnami/nginx/conf/mime.types /opt/bitnami/nginx/conf/mime.types.${DATESTAMP}
 	printf "Step 3.2: modify config  \r\n"
 	sudo cp /opt/bitnami/nginx/conf/mime.types.mod /opt/bitnami/nginx/conf/mime.types
 }
 
 function step4(){
-	printf "Step 4.1: make backup  \r\n"
-	sudo mv /opt/bitnami/nginx/conf/bitnami/bitnami.conf /opt/bitnami/nginx/conf/bitnami/bitnami.conf.${DATESTAMP}
-
-	printf "Step 4.2: replacing config  \r\n"
+	printf "Step 4.1: replacing config  \r\n"
 	if ! [ -f "/opt/bitnami/nginx/conf/bitnami/bitnami.conf.mod" ]; then
 		printf "config not found: %s\n%s\n" "/opt/bitnami/nginx/conf/bitnami/bitnami.conf.mod" "$QUIT_MSG"
 		exit 1
 	fi
-	sudo sed 's/WP248_PRIMARY_DOMAIN/${PRIMARY_DOMAIN}/g' /opt/bitnami/nginx/conf/bitnami/bitnami.conf.mod  > "${DIR}/tmp/bitnami.conf.step1"
+	sudo sed "s/WP248_PRIMARY_DOMAIN/${PRIMARY_DOMAIN}/g" /opt/bitnami/nginx/conf/bitnami/bitnami.conf.mod  > "${DIR}/tmp/bitnami.conf.step1"
 
 
-	printf "Step 4.3: replacing config  \r\n"
+	printf "Step 4.2: replacing config  \r\n"
 	if ! [ -f "${DIR}/tmp/bitnami.conf.step1" ]; then
 		printf "config not found: %s\n%s\n" "${DIR}/tmp/bitnami.conf.step1" "$QUIT_MSG"
 		exit 1
 	fi
 
-	sudo sed 's/WP248_NGX_DOMAINS/${NGX_DOMAINS}/g' "${DIR}/tmp/bitnami.conf.step1"  > "${DIR}/tmp/bitnami.conf.step2"
+	sudo sed "s/WP248_NGX_DOMAINS/${NGX_DOMAINS}/g" "${DIR}/tmp/bitnami.conf.step1"  > "${DIR}/tmp/bitnami.conf.step2"
 
-	printf "Step 4.4: replacing config  \r\n"
+	printf "Step 4.3: replacing config  \r\n"
 	if ! [ -f "${DIR}/tmp/bitnami.conf.step2" ]; then
 		printf "config not found: %s\n%s\n" "${DIR}/tmp/bitnami.conf.step2" "$QUIT_MSG"
 		exit 1
 	fi
 
-	sudo sed 's/WP248_NGX_DOMAINS_WITHOUT_PRIMARY/${NGX_DOMAINS_WITHOUT_PRIMARY}/g' ${DIR}/tmp/bitnami.conf.step2  > ${DIR}/tmp/bitnami.conf.step3
+	sudo sed "s/WP248_NGX_WITHOUT_PRIMARY_DOMAIN/${NGX_DOMAINS_WITHOUT_PRIMARY}/g" ${DIR}/tmp/bitnami.conf.step2  > ${DIR}/tmp/bitnami.conf.step3
+
+	printf "Step 4.4: make backup  \r\n"
+	sudo cp /opt/bitnami/nginx/conf/bitnami/bitnami.conf /opt/bitnami/nginx/conf/bitnami/bitnami.conf.${DATESTAMP}
 
 	printf "Step 4.5: replacing config  \r\n"
-	sudo mv /opt/wp248/setup/bitnami.conf /opt/bitnami/nginx/conf/bitnami/bitnami.conf
+	sudo mv ${DIR}/tmp/bitnami.conf.step3 /opt/bitnami/nginx/conf/bitnami/bitnami.conf
 
 }
+
 # =============================================================================
 # Variables
 # =============================================================================
@@ -184,15 +186,14 @@ printf "===========\n > PRIMARY_DOMAIN: %s\n" "$PRIMARY_DOMAIN"
 #printf "===========\n > CRT_DOMAINS: %s\n" "$CRT_DOMAINS"
 printf "===========\n > NGX_DOMAINS: %s\n" "$NGX_DOMAINS"
 printf "===========\n > NGX_DOMAINS_WITHOUT_PRIMARY: %s\n" "$NGX_DOMAINS_WITHOUT_PRIMARY"
-prep_domain
+
 
 printf "Step 02.01: Verify tmp directory\n";
-if [ -d "${DIR}/tmp/" ]; then
-	sudo mkdir -p "${DIR}/tmp/"
+if ! [ -d "${DIR}/tmp/" ]; then
+	sudo mkdir -p $DIR/tmp
     sudo chown -R bitnami:daemon ${DIR}/tmp/;
     sudo chmod -Rf 775 ${DIR}/tmp/;
 fi
-
 
 printf "=========[ START nginx CONFIG ${DATESTAMP} ]=========\r\n"
 printf "Step 1: Fixing /opt/bitnami/apps/wordpress/conf/nginx-app.conf \r\n"
