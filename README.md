@@ -72,7 +72,7 @@ chmod +x /opt/wp248/scripts/*.sh
 /opt/wp248/scripts/adding-scripts-path.sh
 
 
-cp /opt/wp248/script/conf/.env.example /opt/wp248/script/conf/.env
+cp /opt/wp248/script/conf/env.example /opt/wp248/script/conf/.env
 
 # Modify the enviroments file
 nano /opt/wp248/script/conf/.env
