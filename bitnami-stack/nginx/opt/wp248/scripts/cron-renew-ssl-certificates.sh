@@ -45,8 +45,8 @@ function renew_ssl()
 	sudo /opt/bitnami/ctlscript.sh stop nginx
 
 	printf " >> Stoping requesting new certificates\n";
-#	sudo /opt/bitnami/letsencrypt/lego --http --tls --accept-tos --email="${CRT_EMAIL}" ${CRT_DOMAINS} \
-#									   --path="/opt/bitnami/letsencrypt" renew
+	sudo /opt/bitnami/letsencrypt/lego --http --tls --accept-tos --email="${CRT_EMAIL}" ${CRT_DOMAINS} \
+									   --path="/opt/bitnami/letsencrypt" renew
 	# Restart Service
 	sudo /opt/bitnami/ctlscript.sh start nginx
 
