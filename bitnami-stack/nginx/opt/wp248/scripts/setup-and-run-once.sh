@@ -63,9 +63,9 @@ function setup_ssl() {
 	printf " >> Stoping nginx service\n";
 	sudo /opt/bitnami/ctlscript.sh stop nginx
 #
-#	printf " >> Stoping requesting new certificates\n";
-#	sudo /opt/bitnami/letsencrypt/lego --http --tls --accept-tos --email="${CRT_EMAIL}" ${CRT_DOMAINS} \
-#									   --path="/opt/bitnami/letsencrypt" run
+	printf " >> Stoping requesting new certificates\n";
+	sudo /opt/bitnami/letsencrypt/lego --http --tls --accept-tos --email="${CRT_EMAIL}" ${CRT_DOMAINS} \
+									   --path="/opt/bitnami/letsencrypt" run
 
 	if [ -f "${CRT_DIR}/server.crt" ]; then
 		printf " >> backup current certificates files: server.crt \n";
