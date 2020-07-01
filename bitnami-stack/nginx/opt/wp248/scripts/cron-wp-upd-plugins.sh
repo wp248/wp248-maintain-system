@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-#!/usr/bin/env bash
 
 # Bitnami default wordpress doc root
 SITE_DIR=/opt/bitnami/apps/wordpress/htdocs/
+SITE_LOG=/opt/bitnami/apps/wordpress/logs
+
 
 # Backup directory, we recommend it to be outside of HTTP root directory
 BACKUP_PATH=/opt/bitnami/apps/wordpress/wp-update-backups/
@@ -96,6 +97,14 @@ function write_permissions {
     # Verify backup directory permissions
     sudo chown -R bitnami:daemon ${BACKUP_PATH};
     sudo chmod -Rf 775 ${BACKUP_PATH};
+
+    if [ ! -d ${SITE_LOG} ]; then
+        sudo mkdir -p ${SITE_LOG}
+    fi
+
+    # Verify debug log directory permissions
+    sudo chown -R bitnami:daemon ${SITE_LOG};
+    sudo chmod -Rf 775 ${SITE_LOG};
 
 
 }

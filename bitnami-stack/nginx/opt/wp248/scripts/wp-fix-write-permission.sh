@@ -2,7 +2,7 @@
 
 SITE_DIR=/opt/bitnami/apps/wordpress/htdocs/
 SITE_BAK=/opt/bitnami/apps/wordpress/wp-update-backups/
-
+SITE_LOG=/opt/bitnami/apps/wordpress/logs/
 
 # =============================================================================
 # Functions
@@ -58,6 +58,14 @@ function write_permissions {
     sudo chown -R bitnami:daemon ${SITE_BAK};
     sudo chmod -Rf 775 ${SITE_BAK};
 
+    if [ ! -d ${SITE_LOG} ]; then
+        sudo mkdir -p ${SITE_LOG}
+    fi
+
+    # Verify debug log directory permissions
+    sudo chown -R bitnami:daemon ${SITE_LOG};
+    sudo chmod -Rf 775 ${SITE_LOG};
+
 }
 
 function default_permissions {
@@ -83,6 +91,15 @@ function default_permissions {
     # Verify backup directory permissions
     sudo chown -R bitnami:daemon ${SITE_BAK};
     sudo chmod -Rf 775 ${SITE_BAK};
+
+    if [ ! -d ${SITE_LOG} ]; then
+        sudo mkdir -p ${SITE_LOG}
+    fi
+
+    # Verify debug log directory permissions
+    sudo chown -R bitnami:daemon ${SITE_LOG};
+    sudo chmod -Rf 775 ${SITE_LOG};
+
 }
 
 #default_permissions;

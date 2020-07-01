@@ -28,6 +28,7 @@ function bash_apt_update() {
 	sudo apt install locate -y
 	sudo apt install telnet -y
 	sudo apt install git -y
+	sudo apt install rsync -y
 	sudo updatedb
 }
 
@@ -238,6 +239,8 @@ ${WP_CLI_PATH}/wp config set DISABLE_WP_CRON true --path="${WP_SITE_ROOT}" --all
 ${WP_CLI_PATH}/wp config set WP_SITEURL "https://$PRIMARY_DOMAIN/" --path="${WP_SITE_ROOT}" --allow-root;
 ${WP_CLI_PATH}/wp config set WP_HOME "https://$PRIMARY_DOMAIN/" --path="${WP_SITE_ROOT}" --allow-root;
 ${WP_CLI_PATH}/wp config get --path="${WP_SITE_ROOT}" --allow-root;
+${WP_CLI_PATH}/wp config set WP_DEBUG_LOG "${CONF_FILE}/wordpress-errors.log" --allow-root;
+
 
 
 printf "Step 08.01: Deactivate default plugin\n";
@@ -261,4 +264,5 @@ write_permissions
 
 printf "Step 011.00: restart services\n";
 sudo nginx -t && sudo /opt/bitnami/ctlscript.sh restart php-fpm nginx
+
 
