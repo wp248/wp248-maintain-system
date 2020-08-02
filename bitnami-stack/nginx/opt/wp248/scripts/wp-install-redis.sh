@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 sudo apt update
-sudo apt install redis-server
+sudo apt install redis-server -y
 sudo apt-get -y install gcc make autoconf libc-dev pkg-config
 
 sudo nano /etc/redis/redis.conf
@@ -26,7 +26,7 @@ Search for:
 # maxmemory <bytes>
 
 Add:
-maxmemory 128mb
+maxmemory 256mb
 
 
 Search for:
@@ -34,6 +34,7 @@ Search for:
 Replace/add to:
 maxmemory-policy allkeys-lru
 
+sudo systemctl restart redis
 
 redis-cli
 ping
@@ -45,7 +46,8 @@ sudo /opt/bitnami/ctlscript.sh restart php-fpm nginx
 sudo systemctl restart redis
 
 cd /opt/bitnami/apps/wordpress/htdocs/
-wp config set WP_CACHE_KEY_SALT your-domain-name.com_
+wp config set WP_CACHE_KEY_SALT tutors.kidsontheyard.com_
+wp plugin  install redis-cache --activate
 
 # the underscore at the end of the domain will help to see the right parm
 
