@@ -7,7 +7,6 @@ New setup version:
 ```
 wget https://github.com/wp248/wp248-maintain-system/archive/master.zip
 unzip master.zip
-sudo cp -Rf ~/wp248-maintain-system-master/bitnami-stack/nginx/home/bitnami/* ~/
 sudo cp -Rf ~/wp248-maintain-system-master/bitnami-stack/nginx/opt/* /opt/
 
 sudo chown -R bitnami:daemon /opt/wp248

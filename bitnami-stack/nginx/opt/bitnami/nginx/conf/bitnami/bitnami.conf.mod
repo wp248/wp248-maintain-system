@@ -66,11 +66,18 @@ server {
 	#
 	#include "/opt/bitnami/nginx/conf/bitnami/phpfastcgi.conf";
 	include "/opt/bitnami/nginx/conf/bitnami/bitnami-apps-prefix.conf";
-	# Add rocket-nginx
-	#include "/opt/bitnami/nginx/conf/rocket-nginx.conf";
-	# Support Imagify and webp
-	#include "/opt/bitnami/nginx/conf/imagify.conf";
-}
+
+
+		# Support Imagify and webp
+		include "/opt/bitnami/nginx/conf/imagify.conf";
+
+		# Add wp-rocket-nginx
+		include "/opt/bitnami/nginx/conf/wp-rocket-nginx.conf";
+
+		# add  W3TC Browser Cache
+		#include "/opt/bitnami/nginx/conf/w3-total-cache.conf";
+
+		}
 
 include "/opt/bitnami/nginx/conf/bitnami/bitnami-apps-vhosts.conf";
 
