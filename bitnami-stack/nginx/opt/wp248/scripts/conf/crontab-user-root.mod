@@ -58,6 +58,6 @@
 # 24 2 * * * su daemon -s /bin/sh -c "cd /opt/bitnami/apps/wordpress/htdocs/; /opt/bitnami/apps/wordpress/bin/wp autoptimize clear --path="/opt/bitnami/apps/wordpress/htdocs"  --allow-root"
 
 # SSL update once in a month at:
-0 0 1 * * /opt/wp248/scripts/cron-renew-ssl-certificates.sh /opt/wp248/scripts/conf> /dev/null
+0 0 1 * * /opt/wp248/scripts/cron-renew-ssl-certificates.sh /opt/wp248/scripts> /dev/null
 
 # Plugin Specific: wordfance: Unable to open file for reading and writing.
