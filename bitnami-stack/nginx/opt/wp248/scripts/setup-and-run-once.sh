@@ -112,6 +112,7 @@ function wp_install_plugins() {
 					  "envato-elements"
 					  "post-smtp",
 					  "imagify",
+					  "code-snippets",
 					  "wps-hide-login");
 # Removed from the list
 #					  "redirection",
