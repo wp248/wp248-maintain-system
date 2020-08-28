@@ -5,9 +5,14 @@ max_execution_time = 300
 max_input_time = 400
 max_input_vars = 10000
 memory_limit = 512M
-upload_max_filesize = 48M
 max_file_uploads = 20
-post_max_size = 48M
+upload_max_filesize = 1024M
+post_max_size = 1024M
+
+# Use 0 to the max suppported files size
+#upload_max_filesize = 0
+#post_max_size = 0
+
 
 # Date Time
 #date.timezone = "America/Los_Angeles"
