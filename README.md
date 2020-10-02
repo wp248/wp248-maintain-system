@@ -86,7 +86,8 @@ maxmemory-policy allkeys-lru
 ```
 
 redis config search and replace 3:
-Note:
+
+Notes:
 * Securing your redis command from external attack
 * you can skip this for stand setup
 ```
@@ -102,7 +103,8 @@ rename-command SHUTDOWN WP248_SHUTDOWN
 rename-command CONFIG WP248_CONFIG
 ```
 redis config search and replace 4:
-Note:
+
+Notes:
 * this parm based on your server configuration and free memory
 * Skip this config if you are not sure
 ```
@@ -133,7 +135,8 @@ sudo /opt/bitnami/ctlscript.sh restart php-fpm nginx
 sudo systemctl restart redis
 ```
 Add wordpress config for redis
-Note:
+
+Notes:
 * we adding [_] (underscore to the end at the domain name)
 * the underscore at the end of the domain will help to see the right parm
 ```
