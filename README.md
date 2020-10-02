@@ -1,13 +1,17 @@
 # wp248-maintain-system
 Collection of scripts to support during the setup of WordPress sites, but mostly for system maintenance.
 # Table of Contents
-1. [Download lates version](#setup)
-2. [NGINX Instructions](#nginx)
-3. [APACHE2 Instructions](#apach2)
-4. [redis server on NGINX](#redis-nginx)
-``
+* [Download lates version](#setup)
+* [NGINX Instructions](#nginx)
+* [APACHE2 Instructions](#apach2)
+* [redis server on NGINX](#redis-nginx)
+* [WordPress related tweaks for bitnami](#wordpress)
+    - [Define domain name for CLI](#cli-domain-name)
+    - [Disable all debugs errors](#wp-debug-off)
+    - [Enable all debugs errors](#wp-debug-on)
+    - [Rename default admin user](#wp-rename-admin)
 
-New setup version:<a name="setup" />
+## Download the latest version:<a name="setup" />
 ```
 wget https://github.com/wp248/wp248-maintain-system/archive/master.zip
 unzip master.zip
@@ -154,3 +158,60 @@ wp config set WP_CACHE_KEY_SALT YOURDOMAIN.COM_
 wp plugin install redis-cache --activate
 ```
 
+## WordPress related tweaks for bitnami:<a name="wordpress" />
+
+### Define domain name for CLI:<a name="cli-domain-name" />
+```
+sudo nano /opt/bitnami/apps/wordpress/htdocs/wp-config.php
+```
+search for:
+```
+if ( defined( 'WP_CLI' ) ) {
+    $_SERVER['HTTP_HOST'] = 'localhost';
+}
+```
+replace with:
+```
+if ( defined( 'WP_CLI' ) ) {
+    $_SERVER['HTTP_HOST'] = 'YOUR-DOMAIN-NAME.COM';
+}
+
+```
+### Disable all debugs errors:<a name="wp-debug-off" />
+Add the following lines before:
+
+/* That's all, stop editing! Happy publishing. */
+```
+ini_set('display_errors','Off');
+ini_set('error_reporting', E_ALL );
+define('WP_DEBUG', false);
+define('WP_DEBUG_DISPLAY', false);
+```
+### Enable all debugs errors:<a name="wp-debug-on" />
+Add the following lines before:
+
+/* That's all, stop editing! Happy publishing. */
+```
+ini_set('display_errors','On');
+ini_set('error_reporting', E_ALL );
+define('WP_DEBUG', true);
+define('WP_DEBUG_DISPLAY', true);
+// comment this out to change the default error log locations
+//define( 'WP_DEBUG_LOG', '/opt/bitnami/apps/wordpress/log/wp-errors.log' );
+define( 'SCRIPT_DEBUG', true );
+
+```
+
+```
+wp config set WP_DEBUG_LOG '/opt/bitnami/apps/wordpress/log/wordpress-errors.log'
+```
+
+### Rename default admin user:<a name="wp-rename-admin" />
+
+```
+mysql -p -u bn_wordpress bitnami_wordpress
+
+update wp_users  set user_email='webmaster@DOMAIN.com'  where user_login='user';
+update wp_users  set user_login='NEW-USER-ID' where user_login='user';
+
+```
