@@ -54,6 +54,7 @@ sudo chown -R bitnami:daemon /opt/bitnami/apps/wordpress/wp-update-backups/db/
 ## APACHE2 ONLY - WARNING this is NOT NGINX setup
 
 ```
-sudo cp -Rf ~/wp248-maintain-system-master/bitnami-stack/APACHE2/opt/* /opt/
+sudo cp -Rf ~/wp248-maintain-system-master/bitnami-stack/apache2/opt/* /opt/
 ```
 
+Setup process TBD
