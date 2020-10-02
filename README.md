@@ -1,16 +1,22 @@
 # wp248-maintain-system
 Collection of scripts to support during the setup of WordPress sites, but mostly for system maintenance.
-
+# Table of Contents
+1. [Download lates version](#setup)
+2. [NGINX Instructions](#nginx)
+3. [APACHE2 Instructions](#apach2)
+4. [redis server on NGINX](#redis-nginx)
 ``
 
-New setup version:
+New setup version:<a name="setup" />
 ```
 wget https://github.com/wp248/wp248-maintain-system/archive/master.zip
 unzip master.zip
 ```
 
 
-## NGINX ONLY - WARNING this is NOT APACHE2 setup
+## NGINX Setup instructions<a name="nginx" />
+> :warning: this is NOT APACHE2 setup
+
 
 ```
 sudo cp -Rf ~/wp248-maintain-system-master/bitnami-stack/nginx/opt/* /opt/
@@ -48,7 +54,9 @@ sudo ls -lah /opt/bitnami/letsencrypt/certificates
 
 ```
 
-## APACHE2 ONLY - WARNING this is NOT NGINX setup
+## APACHE2 Setup instructions<a name="apach2" />
+> :warning: this is NOT NGINX setup
+
 
 ```
 sudo cp -Rf ~/wp248-maintain-system-master/bitnami-stack/apache2/opt/* /opt/
@@ -57,7 +65,8 @@ sudo cp -Rf ~/wp248-maintain-system-master/bitnami-stack/apache2/opt/* /opt/
 Setup process TBD
 
 
-## Installing redis - bitnami NGINX configuration
+## Installing redis on Nginx <a name="redis-nginx" />
+> :warning: this is NGINX setup for bitnami stack, but can be used as guideline for other installs
 
 Install redis server
 ```
