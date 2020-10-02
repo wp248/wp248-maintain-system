@@ -7,7 +7,12 @@ New setup version:
 ```
 wget https://github.com/wp248/wp248-maintain-system/archive/master.zip
 unzip master.zip
+```
 
+
+## NGINX ONLY - WARNING THIS is NOT APACHE2 setup
+
+```
 sudo cp -Rf ~/wp248-maintain-system-master/bitnami-stack/nginx/opt/* /opt/
 
 
@@ -44,5 +49,11 @@ Verify:
 sudo mkdir -p /opt/bitnami/apps/wordpress/wp-update-backups/db/
 sudo chown -R bitnami:daemon /opt/bitnami/apps/wordpress/wp-update-backups/db/
 
+```
+
+## APACHE2 ONLY - WARNING THIS is NOT NGINX setup
+
+```
+sudo cp -Rf ~/wp248-maintain-system-master/bitnami-stack/APACHE2/opt/* /opt/
 ```
 
