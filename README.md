@@ -7,13 +7,18 @@ New setup version:
 ```
 wget https://github.com/wp248/wp248-maintain-system/archive/master.zip
 unzip master.zip
+
 sudo cp -Rf ~/wp248-maintain-system-master/bitnami-stack/nginx/opt/* /opt/
+
 
 sudo chown -R bitnami:daemon /opt/wp248
 chmod +x /opt/wp248/wp-update/*.sh
 chmod +x /opt/wp248/scripts/*.sh
 
+# General add scripts to the path
 /opt/wp248/scripts/adding-scripts-path.sh
+
+/opt/bitnami/letsencrypt/certificates
 
 
 cp /opt/wp248/scripts/conf/env.example /opt/wp248/scripts/conf/.env
