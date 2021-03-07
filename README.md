@@ -61,6 +61,14 @@ sudo ls -lah /opt/bitnami/letsencrypt/certificates
 ## APACHE2 Setup instructions<a name="apach2" />
 > :warning: this is NOT NGINX setup
 
+### Download the latest version:<a name="setup" />
+```
+wget https://github.com/wp248/wp248-maintain-system/archive/master.zip
+unzip master.zip
+```
+
+
+
 
 ```
 sudo cp -Rf ~/wp248-maintain-system-master/bitnami-stack/apache2/opt/* /opt/
