@@ -64,6 +64,20 @@ sudo ls -lah /opt/bitnami/letsencrypt/certificates
 
 ```
 sudo cp -Rf ~/wp248-maintain-system-master/bitnami-stack/apache2/opt/* /opt/
+
+sudo chown -R bitnami:daemon /opt/wp248
+chmod +x /opt/wp248/wp-update/*.sh
+chmod +x /opt/wp248/scripts/*.sh
+
+# General add scripts to the path
+/opt/wp248/scripts/adding-scripts-path.sh
+
+
+sudo /opt/bitnami/apps/wordpress/bnconfig --disable_banner 1
+
+/opt/wp248/scripts/install-first-step1.sh
+
+/opt/wp248/scripts/update.sh
 ```
 
 Setup process TBD
